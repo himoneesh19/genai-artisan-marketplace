@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Artisan AI Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Your Profile</h5>
+            </div>
+            <div class="card-body">
+                <h6>{{ user.full_name or user.username }}</h6>
+                <p><strong>Craft:</strong> {{ user.craft_type or 'Not specified' }}</p>
+                <p><strong>Location:</strong> {{ user.location or 'Not specified' }}</p>
+                <p><strong>Bio:</strong> {{ user.bio or 'Not specified' }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Generated Content</h5>
+                <a href="{{ url_for('generate_content') }}" class="btn btn-primary btn-sm">Generate New Content</a>
+            </div>
+            <div class="card-body">
+                {% if generated_content %}
+                    <div class="list-group">
+                        {% for content in generated_content %}
+                            <div class="list-group-item">
+                                <h6>{{ content.content_type|title }}</h6>
+                                <p>{{ content.generated_text or 'Image generated' }}</p>
+                                <small class="text-muted">{{ content.created_at }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No content generated yet. <a href="{{ url_for('generate_content') }}">Generate some!</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

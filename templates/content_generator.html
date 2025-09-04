@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Content - Artisan AI Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Generate AI-Powered Content</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="content_type" class="form-label">Content Type</label>
+                        <select class="form-control" id="content_type" name="content_type" required>
+                            <option value="marketing_copy">Marketing Copy</option>
+                            <option value="social_post">Social Media Post</option>
+                            <option value="craft_story">Craft Story</option>
+                            <option value="image">Product Image</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="platform_div" style="display: none;">
+                        <label for="platform" class="form-label">Platform</label>
+                        <select class="form-control" id="platform" name="platform">
+                            <option value="Instagram">Instagram</option>
+                            <option value="Facebook">Facebook</option>
+                            <option value="Twitter">Twitter</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="prompt" class="form-label">Prompt / Description</label>
+                        <textarea class="form-control" id="prompt" name="prompt" rows="4" required
+                                  placeholder="Describe your craft, product, or what you want to generate..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Generate Content</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('content_type').addEventListener('change', function() {
+    var platformDiv = document.getElementById('platform_div');
+    if (this.value === 'social_post') {
+        platformDiv.style.display = 'block';
+    } else {
+        platformDiv.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}
