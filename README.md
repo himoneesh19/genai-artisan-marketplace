@@ -1,151 +1,203 @@
 # GenAI Artisan Marketplace
 
-A Flask-based web application for artisans to generate AI-powered marketing content using Google Cloud Vertex AI.
+A Flask-based web application that empowers artisans to create AI-powered marketing content using Google Cloud Vertex AI. Includes user authentication, content generation for marketing copy and social media, and a dashboard for managing outputs.
 
 ## Features
 
 - User registration and authentication
-- AI-powered content generation (marketing copy, social media posts, craft stories)
-- Dashboard for managing generated content
+- AI-powered content generation:
+  - Marketing copy
+  - Social media posts
+  - Craft stories
+  - Product visual descriptions and images
+- Dashboard to view and manage generated content
 - SQLite database for data persistence
+- Integration with Google Cloud Vertex AI for generative AI capabilities
+- Responsive UI built with Bootstrap
 
 ## Setup Instructions
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.8 or higher
 - Google Cloud Project with Vertex AI enabled
-- Service account credentials
+- Service account credentials with Vertex AI permissions
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/himoneesh19/genai-artisan-marketplace.git
    cd genai-artisan-marketplace
    ```
 
-2. **Create virtual environment**
-   ```bash
-   python -m venv venv
-   ```
+2. **Create and activate a virtual environment**
 
-3. **Activate virtual environment**
    - Windows (PowerShell):
+
      ```powershell
+     python -m venv venv
      & venv\Scripts\Activate.ps1
      ```
+
    - Windows (Command Prompt):
+
      ```cmd
+     python -m venv venv
      venv\Scripts\activate
      ```
+
    - Linux/Mac:
+
      ```bash
+     python3 -m venv venv
      source venv/bin/activate
      ```
 
-4. **Install dependencies**
+3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
-5. **Set up Google Cloud credentials**
+4. **Set up Google Cloud credentials**
 
-   **Important Security Note:** Service account credentials should be stored outside the project directory for security.
+   - Store your service account JSON file securely outside the project directory.
+   - Set environment variables to point to your credentials and project ID.
 
-   - Move your service account JSON file to a secure location (e.g., `C:\secure\genAI\credentials\my-project-genai-471504-228dc08e66b2.json`)
-   - Set the environment variable to point to this location:
+   Example for Windows PowerShell:
 
-   **Windows (PowerShell):**
    ```powershell
-   $env:GOOGLE_APPLICATION_CREDENTIALS = "C:\secure\genAI\credentials\my-project-genai-471504-228dc08e66b2.json"
-   $env:GOOGLE_CLOUD_PROJECT = "my-project-genai-471504"
+   $env:GOOGLE_APPLICATION_CREDENTIALS = "C:\secure\genAI\credentials\your-service-account.json"
+   $env:GOOGLE_CLOUD_PROJECT = "your-google-cloud-project-id"
    ```
 
-   **Windows (Command Prompt):**
-   ```cmd
-   set GOOGLE_APPLICATION_CREDENTIALS=C:\secure\genAI\credentials\my-project-genai-471504-228dc08e66b2.json
-   set GOOGLE_CLOUD_PROJECT=my-project-genai-471504
-   ```
+   Example for Linux/Mac:
 
-   **Linux/Mac:**
    ```bash
-   export GOOGLE_APPLICATION_CREDENTIALS="/path/to/secure/location/service-account.json"
-   export GOOGLE_CLOUD_PROJECT="my-project-genai-471504"
+   export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account.json"
+   export GOOGLE_CLOUD_PROJECT="your-google-cloud-project-id"
+   ```
+
+5. **Initialize the database**
+
+   The SQLite database (`artisans.db`) will be created automatically on first run. To apply schema fixes, run:
+
+   ```bash
+   python fix_db_add_materials.py
    ```
 
 6. **Run the application**
+
    ```bash
    python app.py
    ```
 
 7. **Access the application**
-   - Open your browser and navigate to `http://127.0.0.1:5000`
-   - Register a new account or login
+
+   Open your browser and navigate to:
+
+   ```
+   http://127.0.0.1:5000
+   ```
 
 ## Project Structure
 
+The following files and folders are included in the repository:
+
 ```
-├── app.py                 # Main Flask application
-├── config.py              # Configuration settings
+.
+├── app.py
+├── app.yaml
+├── config.py
+├── fix_db_add_materials.py
+├── README.md
+├── requirements-dev.txt
+├── requirements.txt
+├── start.bat
+├── start.ps1
+├── TODO.md
+├── .gcloudignore
+├── .gitignore
 ├── models/
-│   └── database.py        # Database models and functions
-├── utils/
-│   └── ai_helper.py       # Vertex AI integration
-├── templates/             # HTML templates
-├── static/                # CSS and JavaScript files
-├── requirements.txt       # Python dependencies
-└── README.md             # This file
+│   ├── .gitkeep
+│   └── database.py
+├── static/
+│   ├── css/
+│   │   └── styles.css
+│   ├── images/
+│   │   ├── 3cc980d2-073d-405d-9e35-b12e6c432ae4.png
+│   │   ├── b62801ed-873e-41cc-a1ac-7e1ca43e47c4.png
+│   │   └── fddac8bc-243a-43d1-a4d0-3e93e3b4568d.png
+│   └── js/
+│       └── scripts.js
+├── templates/
+│   ├── .gitkeep
+│   ├── base.html
+│   ├── content_generator.html
+│   ├── dashboard.html
+│   ├── login.html
+│   ├── preview.html
+│   └── register.html
+└── utils/
+    └── ai_helper.py
 ```
 
 ## API Endpoints
 
-- `GET /` - Home page (redirects to login/dashboard)
-- `GET/POST /login` - User login
+- `GET /` - Redirects to login or dashboard based on session
 - `GET/POST /register` - User registration
-- `GET /dashboard` - User dashboard
-- `GET/POST /generate_content` - Content generation form
-- `POST /api/generate_marketing_copy` - Generate marketing copy
-- `POST /api/generate_social_media_post` - Generate social media post
-- `POST /api/generate_craft_story` - Generate craft story
-- `POST /api/generate_product_visual` - Generate product visual description
+- `GET/POST /login` - User login
+- `GET /logout` - User logout
+- `GET /dashboard` - User dashboard showing profile and generated content
+- `GET/POST /generate_content` - Main form to generate AI-powered content (used by UI dropdown options)
+- `POST /api/generate_marketing_copy` - Generate marketing copy (programmatic API access)
+- `POST /api/generate_social_media_post` - Generate social media post (programmatic API access)
+- `POST /api/generate_craft_story` - Generate craft story (programmatic API access)
+- `POST /api/generate_product_visual` - Generate product visual description (programmatic API access)
+- `GET/POST /preview/<content_id>` - Preview, edit, approve generated content
+- `POST /delete_content/<content_id>` - Delete generated content
 
 ## Environment Variables
 
-Create a `.env` file in the project root with the following variables:
+Create a `.env` file or set environment variables in your system:
 
 ```env
 SECRET_KEY=your-secret-key-here
-GOOGLE_CLOUD_PROJECT=my-project-genai-471504
-GOOGLE_APPLICATION_CREDENTIALS=C:\secure\genAI\credentials\my-project-genai-471504-228dc08e66b2.json
+GOOGLE_CLOUD_PROJECT=your-google-cloud-project-id
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-service-account.json
 VERTEX_AI_LOCATION=asia-south1
 ```
 
 ## Security Notes
 
-- Never commit service account JSON files to version control
-- Store credentials in secure locations outside the project directory
-- Use environment variables for sensitive configuration
-- Regularly rotate service account keys
+- Never commit service account JSON files or sensitive credentials to version control.
+- Store credentials securely outside the project directory.
+- Use environment variables for sensitive configuration.
+- Regularly rotate service account keys.
 
 ## Troubleshooting
 
 ### Vertex AI Initialization Issues
-- Ensure `GOOGLE_APPLICATION_CREDENTIALS` points to a valid service account JSON file
-- Verify the service account has Vertex AI permissions
-- Check that the Google Cloud project ID is correct
+
+- Ensure `GOOGLE_APPLICATION_CREDENTIALS` points to a valid service account JSON file.
+- Verify the service account has Vertex AI permissions.
+- Check that the Google Cloud project ID is correct.
 
 ### Database Issues
-- The app uses SQLite (`artisans.db`) which is created automatically
-- If you encounter database errors, delete `artisans.db` and restart the app
 
-## Contributing
+- The app uses SQLite (`artisans.db`) which is created automatically.
+- If you encounter database errors, delete `artisans.db` and restart the app.
+- Run `fix_db_add_materials.py` to apply schema fixes if needed.
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+## Contribution Guidelines
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Make your changes.
+4. Test thoroughly.
+5. Submit a pull request.
 
 ## License
 
