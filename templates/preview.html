@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Preview Content - Artisan AI Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Preview Generated Content</h3>
+            </div>
+            <div class="card-body">
+                <h5>Content Type: {{ content.content_type }}</h5>
+                {% if content.generated_text %}
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="generated_text" class="form-label">Generated Content</label>
+                        <textarea class="form-control" id="generated_text" name="generated_text" rows="10">{{ content.generated_text }}</textarea>
+                    </div>
+                    <button type="submit" name="action" value="edit" class="btn btn-secondary">Save Edits</button>
+                    <button type="submit" name="action" value="approve" class="btn btn-primary">Approve & Publish</button>
+                </form>
+                {% elif content.generated_image_url %}
+                <div class="mb-3">
+                    <img src="{{ content.generated_image_url }}" alt="Generated Image" class="img-fluid">
+                </div>
+                <form method="POST">
+                    <button type="submit" name="action" value="approve" class="btn btn-primary">Approve & Publish</button>
+                </form>
+                {% endif %}
+                <a href="{{ url_for('generate_content') }}" class="btn btn-link">Generate New Content</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

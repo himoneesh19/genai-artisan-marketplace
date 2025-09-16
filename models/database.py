@@ -55,6 +55,8 @@ def init_db():
                 prompt TEXT,
                 generated_text TEXT,
                 generated_image_url TEXT,
+                approval_status TEXT DEFAULT 'pending',
+                include_quote INTEGER DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (artisan_id) REFERENCES artisans (id)
             )

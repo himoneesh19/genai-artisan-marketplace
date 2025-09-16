@@ -12,21 +12,49 @@
             <div class="card-body">
                 <form method="POST">
                     <div class="mb-3">
-                        <label for="content_type" class="form-label">Content Type</label>
-                        <select class="form-control" id="content_type" name="content_type" required>
-                            <option value="marketing_copy">Marketing Copy</option>
-                            <option value="social_post">Social Media Post</option>
-                            <option value="craft_story">Craft Story</option>
+                        <label for="generate_as" class="form-label">Generate as</label>
+                        <select class="form-control" id="generate_as" name="generate_as" required>
+                            <option value="artisan_first_person" selected>Artisan (First-person)</option>
+                            <option value="product_listing_third_person">Product Listing (Third-person)</option>
+                            <option value="social_caption">Social Caption</option>
+                            <option value="ad_copy">Ad Copy</option>
+                            <option value="about_press">About / Press</option>
                             <option value="image">Product Image</option>
                         </select>
                     </div>
-                    <div class="mb-3" id="platform_div" style="display: none;">
-                        <label for="platform" class="form-label">Platform</label>
-                        <select class="form-control" id="platform" name="platform">
-                            <option value="Instagram">Instagram</option>
-                            <option value="Facebook">Facebook</option>
-                            <option value="Twitter">Twitter</option>
+                    <div class="mb-3">
+                        <label class="form-label">Tone</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tone" id="friendly" value="friendly" checked>
+                            <label class="form-check-label" for="friendly">Friendly</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tone" id="formal" value="formal">
+                            <label class="form-check-label" for="formal">Formal</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tone" id="humble" value="humble">
+                            <label class="form-check-label" for="humble">Humble</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tone" id="energetic" value="energetic">
+                            <label class="form-check-label" for="energetic">Energetic</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="language" class="form-label">Language</label>
+                        <select class="form-control" id="language" name="language">
+                            <option value="english" selected>English</option>
+                            <option value="hindi">Hindi</option>
+                            <option value="marathi">Marathi</option>
+                            <!-- Add more languages as needed -->
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="include_quote" name="include_quote" checked>
+                            <label class="form-check-label" for="include_quote">Include my quote</label>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="prompt" class="form-label">Prompt / Description</label>
@@ -40,14 +68,5 @@
     </div>
 </div>
 
-<script>
-document.getElementById('content_type').addEventListener('change', function() {
-    var platformDiv = document.getElementById('platform_div');
-    if (this.value === 'social_post') {
-        platformDiv.style.display = 'block';
-    } else {
-        platformDiv.style.display = 'none';
-    }
-});
-</script>
+
 {% endblock %}

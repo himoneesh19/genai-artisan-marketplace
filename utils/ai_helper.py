@@ -1,35 +1,75 @@
 import vertexai
 from vertexai.generative_models import GenerativeModel
-# from vertexai.vision_models import ImageGenerationModel  # Commented out due to import issues
+from vertexai.preview.vision_models import ImageGenerationModel
 import os
+import json
+import tempfile
+import uuid
 from config import Config
+from google.auth import api_key
+from google.oauth2 import service_account
 
 def initialize_vertex_ai():
-    vertexai.init(project=Config.GOOGLE_CLOUD_PROJECT, location=Config.VERTEX_AI_LOCATION)
+    """Initialize Vertex AI with credentials from .env or fallback to file"""
+    credentials = Config.get_service_account_credentials()
+
+    if credentials:
+        # Use credentials from .env
+        print("Using service account credentials from .env")
+        creds = service_account.Credentials.from_service_account_info(credentials)
+        vertexai.init(project=Config.GOOGLE_CLOUD_PROJECT, location=Config.VERTEX_AI_LOCATION, credentials=creds)
+    else:
+        # Fallback to default credentials (JSON file or environment)
+        print("Using default credentials (JSON file)")
+        vertexai.init(project=Config.GOOGLE_CLOUD_PROJECT, location=Config.VERTEX_AI_LOCATION)
 
 def generate_text(prompt, max_tokens=500):
     """
-    Generate text using Vertex AI Generative Model (e.g., PaLM)
+    Generate text using Vertex AI Gemini model with fallback for model availability
     """
-    try:
-        model = GenerativeModel("gemini-1.5-flash")  # Using Gemini model
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return f"Error generating text: {str(e)}"
+    model_names = ["gemini-1.5-flash", "gemini-1.5-pro"]
+    last_error = None
+    for model_name in model_names:
+        try:
+            model = GenerativeModel(model_name)
+            response = model.generate_content(
+                prompt,
+                generation_config={"max_output_tokens": max_tokens}
+            )
+            return response.text
+        except Exception as e:
+            last_error = e
+            # If 404 error, try next model
+            if "404" in str(e) or "not available" in str(e).lower():
+                continue
+            else:
+                return f"Error generating text: {str(e)}"
+    return f"Error generating text: {str(last_error)}"
 
 def generate_image(prompt, aspect_ratio="1:1"):
     """
     Generate image using Vertex AI Image Generation Model (Imagen)
-    Note: Image generation is currently disabled due to API changes.
     """
-    return "Image generation is currently not available. Please check back later."
+    try:
+        model = ImageGenerationModel.from_pretrained("imagen-3.0-generate-001")
+        response = model.generate_images(
+            prompt=prompt,
+            number_of_images=1,
+            aspect_ratio=aspect_ratio
+        )
+        image = response.images[0]
+        # Generate unique filename
+        filename = f"{uuid.uuid4()}.png"
+        filepath = os.path.join("static", "images", filename)
+        image.save(filepath)
+        return filename
+    except Exception as e:
+        raise Exception(f"Error generating image: {str(e)}")
 
-def generate_marketing_copy(craft_description, target_audience="general"):
+def generate_marketing_copy(prompt):
     """
     Generate marketing copy for artisan's craft
     """
-    prompt = f"Write compelling marketing copy for a traditional craft product. Description: {craft_description}. Target audience: {target_audience}. Make it engaging and highlight the unique, handmade nature."
     return generate_text(prompt)
 
 def generate_social_media_post(craft_description, platform="Instagram"):

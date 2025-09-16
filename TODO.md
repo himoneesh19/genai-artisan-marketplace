@@ -1,46 +1,14 @@
-# TODO List for AI-Driven Artisan Platform
+# TODO: Fix Generated Image Display Issue
 
-## Project Setup
-- [x] Create project directory structure (templates/, static/, utils/, models/)
-- [x] Create requirements.txt with necessary dependencies
-- [x] Create config.py for Google Cloud and app settings
-- [ ] Set up Google Cloud project and enable Vertex AI APIs (note: requires user to provide credentials)
+## Completed Steps
+- [x] Analyzed the codebase to understand image generation and display logic
+- [x] Identified that generate_image was returning a hardcoded URL "/static/images/filename" which may not be correct
+- [x] Modified generate_image in utils/ai_helper.py to return filename instead of URL and raise exception on error
+- [x] Updated app.py to use url_for('static', filename=f'images/{generated}') to generate correct static URL
+- [x] Added error handling to flash error message if image generation fails
 
-## Database and Models
-- [x] Create models/database.py for SQLite database operations
-- [x] Define database schema for artisans, products, generated content
-
-## AI Integration
-- [x] Create utils/ai_helper.py for Google Cloud Vertex AI integration
-- [x] Implement text generation functions (marketing copy, stories, social posts)
-- [x] Implement image generation functions (product visuals)
-
-## Backend (Flask App)
-- [x] Create app.py with main Flask application
-- [x] Implement authentication routes (register, login, logout)
-- [ ] Implement profile management routes
-- [x] Implement content generation routes
-- [x] Implement dashboard routes
-
-## Frontend
-- [ ] Create templates/base.html (base template)
-- [ ] Create templates/login.html
-- [ ] Create templates/register.html
-- [ ] Create templates/dashboard.html
-- [ ] Create templates/content_generator.html
-- [ ] Create static/css/styles.css
-- [ ] Create static/js/scripts.js
-
-## Features Implementation
-- [ ] Implement artisan registration and login functionality
-- [ ] Implement profile creation and editing
-- [ ] Implement AI-powered content generation (text)
-- [ ] Implement AI-powered image generation
-- [ ] Implement content management dashboard
-- [ ] Implement export/share functionality
-
-## Testing and Deployment
-- [x] Test local setup and functionality
-- [x] Verify AI integrations work correctly (note: requires Google Cloud credentials)
-- [ ] Test user flows (registration, content generation, dashboard)
-- [x] Deploy locally and verify end-to-end functionality
+## Next Steps
+- [ ] Test the application by generating an image and verifying it displays in preview and dashboard
+- [ ] If issue persists, check browser console for 404 errors on image URL
+- [ ] Ensure static files are served correctly by Flask
+- [ ] Verify that generated images are saved to static/images/ directory

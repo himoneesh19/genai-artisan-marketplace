@@ -24,19 +24,28 @@
                 <a href="{{ url_for('generate_content') }}" class="btn btn-primary btn-sm">Generate New Content</a>
             </div>
             <div class="card-body">
-                {% if generated_content %}
-                    <div class="list-group">
-                        {% for content in generated_content %}
-                            <div class="list-group-item">
-                                <h6>{{ content.content_type|title }}</h6>
-                                <p>{{ content.generated_text or 'Image generated' }}</p>
-                                <small class="text-muted">{{ content.created_at }}</small>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p>No content generated yet. <a href="{{ url_for('generate_content') }}">Generate some!</a></p>
-                {% endif %}
+{% if generated_content %}
+    <div class="list-group">
+        {% for content in generated_content %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <h6>{{ content.content_type|title }}</h6>
+                    {% if content.content_type == 'image' and content.generated_image_url %}
+                        <img src="{{ content.generated_image_url }}" alt="Generated Image" class="img-fluid" style="max-width: 200px;">
+                    {% else %}
+                        <div>{{ content.generated_text | markdown | safe }}</div>
+                    {% endif %}
+                    <small class="text-muted">{{ content.created_at }}</small>
+                </div>
+                <form method="POST" action="{{ url_for('delete_content', content_id=content.id) }}" onsubmit="return confirm('Are you sure you want to delete this content?');">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No content generated yet. <a href="{{ url_for('generate_content') }}">Generate some!</a></p>
+{% endif %}
             </div>
         </div>
     </div>
