@@ -151,12 +151,8 @@ The following files and folders are included in the repository:
 - `GET/POST /login` - User login
 - `GET /logout` - User logout
 - `GET /dashboard` - User dashboard showing profile and generated content
-- `GET/POST /generate_content` - Main form to generate AI-powered content (used by UI dropdown options)
-- `POST /api/generate_marketing_copy` - Generate marketing copy (programmatic API access)
-- `POST /api/generate_social_media_post` - Generate social media post (programmatic API access)
-- `POST /api/generate_craft_story` - Generate craft story (programmatic API access)
-- `POST /api/generate_product_visual` - Generate product visual description (programmatic API access)
-- `GET/POST /preview/<content_id>` - Preview, edit, approve generated content
+- `GET/POST /generate_content` - Form to generate AI-powered content (marketing copy, social media posts, craft stories, product visuals)
+- `GET/POST /preview/<content_id>` - Preview, edit, and approve generated content
 - `POST /delete_content/<content_id>` - Delete generated content
 
 ## Environment Variables
