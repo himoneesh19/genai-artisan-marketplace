@@ -6,7 +6,7 @@ import json
 import tempfile
 import uuid
 from config import Config
-from google.auth import api_key
+from google.auth.credentials import Credentials
 from google.oauth2 import service_account
 
 def initialize_vertex_ai():
@@ -14,14 +14,49 @@ def initialize_vertex_ai():
     credentials = Config.get_service_account_credentials()
 
     if credentials:
-        # Use credentials from .env
+        # Use service account credentials from .env
         print("Using service account credentials from .env")
         creds = service_account.Credentials.from_service_account_info(credentials)
+        vertexai.init(project=Config.GOOGLE_CLOUD_PROJECT, location=Config.VERTEX_AI_LOCATION, credentials=creds)
+    elif Config.VERTEX_AI_API_KEY:
+        # Use API key for text generation - but image generation will fail
+        print("Using API key for VertexAI (text only)")
+        class APIKeyCredentials(Credentials):
+            def __init__(self, api_key):
+                super().__init__()
+                self.api_key = api_key
+            def apply(self, headers, token=None):
+                headers['x-goog-api-key'] = self.api_key
+            def refresh(self, request):
+                pass
+        creds = APIKeyCredentials(Config.VERTEX_AI_API_KEY)
         vertexai.init(project=Config.GOOGLE_CLOUD_PROJECT, location=Config.VERTEX_AI_LOCATION, credentials=creds)
     else:
         # Fallback to default credentials (JSON file or environment)
         print("Using default credentials (JSON file)")
         vertexai.init(project=Config.GOOGLE_CLOUD_PROJECT, location=Config.VERTEX_AI_LOCATION)
+
+def get_text_credentials():
+    """Get credentials for text generation (supports API key)"""
+    credentials = Config.get_service_account_credentials()
+
+    if credentials:
+        # Use service account credentials
+        return service_account.Credentials.from_service_account_info(credentials)
+    elif Config.VERTEX_AI_API_KEY:
+        # Use API key for text generation
+        class APIKeyCredentials(Credentials):
+            def __init__(self, api_key):
+                super().__init__()
+                self.api_key = api_key
+            def apply(self, headers, token=None):
+                headers['x-goog-api-key'] = self.api_key
+            def refresh(self, request):
+                pass
+        return APIKeyCredentials(Config.VERTEX_AI_API_KEY)
+    else:
+        # Fallback to default credentials
+        return None
 
 def generate_text(prompt, max_tokens=500):
     """
@@ -49,8 +84,16 @@ def generate_text(prompt, max_tokens=500):
 def generate_image(prompt, aspect_ratio="1:1"):
     """
     Generate image using Vertex AI Image Generation Model (Imagen)
+    Note: Imagen requires OAuth2 credentials, not API keys
     """
     try:
+        # Check if we have service account credentials for image generation
+        credentials = Config.get_service_account_credentials()
+        if credentials and Config.VERTEX_AI_API_KEY:
+            # Temporarily reinitialize with service account for image generation
+            creds = service_account.Credentials.from_service_account_info(credentials)
+            vertexai.init(project=Config.GOOGLE_CLOUD_PROJECT, location=Config.VERTEX_AI_LOCATION, credentials=creds)
+
         model = ImageGenerationModel.from_pretrained("imagen-3.0-generate-001")
         response = model.generate_images(
             prompt=prompt,
@@ -62,6 +105,20 @@ def generate_image(prompt, aspect_ratio="1:1"):
         filename = f"{uuid.uuid4()}.png"
         filepath = os.path.join("static", "images", filename)
         image.save(filepath)
+
+        # Reinitialize with API key for text generation if needed
+        if Config.VERTEX_AI_API_KEY and credentials:
+            class APIKeyCredentials(Credentials):
+                def __init__(self, api_key):
+                    super().__init__()
+                    self.api_key = api_key
+                def apply(self, headers, token=None):
+                    headers['x-goog-api-key'] = self.api_key
+                def refresh(self, request):
+                    pass
+            creds = APIKeyCredentials(Config.VERTEX_AI_API_KEY)
+            vertexai.init(project=Config.GOOGLE_CLOUD_PROJECT, location=Config.VERTEX_AI_LOCATION, credentials=creds)
+
         return filename
     except Exception as e:
         raise Exception(f"Error generating image: {str(e)}")

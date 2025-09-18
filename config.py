@@ -18,7 +18,7 @@ class Config:
     # Fallback to file-based credentials (removed to avoid missing file error)
     GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
 
-    VERTEX_AI_API_KEY = os.environ.get('VERTEX_AI_API_KEY') or os.environ.get('@GENAI')
+    VERTEX_AI_API_KEY = os.environ.get('VERTEX_AI_API_KEY') or os.environ.get('API_KEY') or os.environ.get('@GENAI')
     VERTEX_AI_LOCATION = 'asia-south1'  # Default location, can be changed
 
     @classmethod
