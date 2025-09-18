@@ -101,6 +101,15 @@ A Flask-based web application that empowers artisans to create AI-powered market
    http://127.0.0.1:5000
    ```
 
+## Demo Credentials
+
+For testing purposes, you can use the following demo login credentials:
+
+- **Username:** himoneesh19
+- **Password:** abc@123
+
+These credentials allow you to log in and explore the application's features without registering a new account.
+
 ## Project Structure
 
 The following files and folders are included in the repository:
