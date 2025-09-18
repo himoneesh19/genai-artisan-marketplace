@@ -74,3 +74,27 @@ def insert_db(query, args=()):
     cur = db.execute(query, args)
     db.commit()
     return cur.lastrowid
+
+def migrate_db():
+    """Migrate the database schema by adding missing columns."""
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        # Add materials column to artisans table if not exists
+        try:
+            cursor.execute("ALTER TABLE artisans ADD COLUMN materials TEXT")
+        except sqlite3.OperationalError:
+            # Column already exists
+            pass
+
+        # Add approval_status and include_quote columns to generated_content table
+        try:
+            cursor.execute("ALTER TABLE generated_content ADD COLUMN approval_status TEXT DEFAULT 'pending'")
+        except sqlite3.OperationalError:
+            pass
+
+        try:
+            cursor.execute("ALTER TABLE generated_content ADD COLUMN include_quote INTEGER DEFAULT 1")
+        except sqlite3.OperationalError:
+            pass
+
+        conn.commit()

@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import markdown
 from config import config
-from models.database import get_db, close_connection, init_db, query_db, insert_db
+from models.database import get_db, close_connection, init_db, query_db, insert_db, migrate_db
 from utils.ai_helper import initialize_vertex_ai, generate_text, generate_marketing_copy, generate_social_media_post, generate_craft_story, generate_product_visual_description, generate_image
 
 app = Flask(__name__)
@@ -17,6 +17,7 @@ def markdown_filter(text):
 # Initialize database
 with app.app_context():
     init_db()
+    migrate_db()
 
 # Initialize Vertex AI (requires credentials)
 try:

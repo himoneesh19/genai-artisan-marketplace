@@ -14,6 +14,7 @@ A Flask-based web application that empowers artisans to create AI-powered market
 - SQLite database for data persistence
 - Integration with Google Cloud Vertex AI for generative AI capabilities
 - Responsive UI built with Bootstrap
+- Content approval workflow: Generated content is saved as 'pending', previewed, edited if needed, and approved before publishing
 
 ## Setup Instructions
 
@@ -82,11 +83,9 @@ A Flask-based web application that empowers artisans to create AI-powered market
 
 5. **Initialize the database**
 
-   The SQLite database (`artisans.db`) will be created automatically on first run. To apply schema fixes, run:
+   The SQLite database (`artisans.db`) will be created automatically on first run. The database migration is now automated and will run automatically on app startup, adding any missing columns (e.g., `approval_status`, `include_quote`, `materials`) without manual intervention.
 
-   ```bash
-   python fix_db_add_materials.py
-   ```
+   **Note:** The migration script `fix_db_add_materials.py` is still available for manual execution if needed, but it's no longer required as the process is now automated.
 
 6. **Run the application**
 
@@ -140,6 +139,8 @@ The following files and folders are included in the repository:
 │   ├── login.html
 │   ├── preview.html
 │   └── register.html
+├── tests/
+│   └── api_test.py
 └── utils/
     └── ai_helper.py
 ```
@@ -154,15 +155,21 @@ The following files and folders are included in the repository:
 - `GET/POST /generate_content` - Form to generate AI-powered content (marketing copy, social media posts, craft stories, product visuals)
 - `GET/POST /preview/<content_id>` - Preview, edit, and approve generated content
 - `POST /delete_content/<content_id>` - Delete generated content
+- `GET /migrate_db` - Run database migration script (alternative to running `fix_db_add_materials.py` directly)
+- `POST /api/generate_marketing_copy` - API endpoint for generating marketing copy
+- `POST /api/generate_social_media_post` - API endpoint for generating social media posts
+- `POST /api/generate_craft_story` - API endpoint for generating craft stories
+- `POST /api/generate_product_visual` - API endpoint for generating product visual descriptions
 
 ## Environment Variables
 
 Create a `.env` file or set environment variables in your system:
 
 ```env
+API_KEY=your-secret-key-here
+GOOGLE_SERVICE_ACCOUNT_JSON=your-json-service-account-credentials
 SECRET_KEY=your-secret-key-here
 GOOGLE_CLOUD_PROJECT=your-google-cloud-project-id
-GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-service-account.json
 VERTEX_AI_LOCATION=asia-south1
 ```
 
