@@ -1,6 +1,12 @@
 import sqlite3
+import os
 
-conn = sqlite3.connect('artisans.db')
+# Use the correct path for the database
+db_path = os.path.join(os.getcwd(), 'artisans.db')
+# For Render deployment, the app is in /app, so uncomment the line below if needed
+# db_path = '/app/artisans.db'
+
+conn = sqlite3.connect(db_path)
 c = conn.cursor()
 
 # Add materials column to artisans table if not exists
