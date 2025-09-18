@@ -264,5 +264,23 @@ def generate_content():
 
     return render_template('content_generator.html')
 
+@app.route('/migrate_db')
+def migrate_db():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    try:
+        import subprocess
+        result = subprocess.run(['python', 'fix_db_add_materials.py'], capture_output=True, text=True)
+        if result.returncode == 0:
+            flash('Database migration completed successfully!')
+            return 'Migration successful: ' + result.stdout
+        else:
+            flash('Migration failed!')
+            return 'Migration failed: ' + result.stderr
+    except Exception as e:
+        flash('Migration error!')
+        return f'Migration error: {str(e)}'
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
