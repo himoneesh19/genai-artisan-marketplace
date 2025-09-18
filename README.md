@@ -16,6 +16,21 @@ A Flask-based web application that empowers artisans to create AI-powered market
 - Responsive UI built with Bootstrap
 - Content approval workflow: Generated content is saved as 'pending', previewed, edited if needed, and approved before publishing
 
+## Working Prototype
+
+You can access the working prototype at: https://genai-artisan-marketplace.onrender.com
+
+Use the demo login credentials provided below to explore the application.
+
+## Demo Credentials
+
+For testing purposes, you can use the following demo login credentials:
+
+- **Username:** himoneesh19
+- **Password:** abc@123
+
+These credentials allow you to log in and explore the application's features without registering a new account.
+
 ## Setup Instructions
 
 ### Prerequisites
@@ -101,20 +116,6 @@ A Flask-based web application that empowers artisans to create AI-powered market
    http://127.0.0.1:5000
    ```
 
-## Working Prototype
-
-You can access the working prototype at: https://genai-artisan-marketplace.onrender.com
-
-Use the demo login credentials provided below to explore the application.
-
-## Demo Credentials
-
-For testing purposes, you can use the following demo login credentials:
-
-- **Username:** himoneesh19
-- **Password:** abc@123
-
-These credentials allow you to log in and explore the application's features without registering a new account.
 
 ## Project Structure
 
