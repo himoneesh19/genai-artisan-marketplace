@@ -1,6 +1,8 @@
 import vertexai
 from vertexai.generative_models import GenerativeModel
 from vertexai.preview.vision_models import ImageGenerationModel
+import google.generativeai as genai
+import requests
 import os
 import json
 import tempfile
@@ -60,9 +62,9 @@ def get_text_credentials():
 
 def generate_text(prompt, max_tokens=500):
     """
-    Generate text using Vertex AI Gemini model with fallback for model availability
+    Generate text using Vertex AI Gemini model with fallback for availability
     """
-    model_names = ["gemini-1.5-flash", "gemini-1.5-pro"]
+    model_names = ["gemini-2.0-flash-lite", "gemini-2.0-flash"]
     last_error = None
     for model_name in model_names:
         try:
@@ -74,7 +76,6 @@ def generate_text(prompt, max_tokens=500):
             return response.text
         except Exception as e:
             last_error = e
-            # If 404 error, try next model
             if "404" in str(e) or "not available" in str(e).lower():
                 continue
             else:

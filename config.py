@@ -19,7 +19,7 @@ class Config:
     GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
 
     VERTEX_AI_API_KEY = os.environ.get('VERTEX_AI_API_KEY') or os.environ.get('API_KEY') or os.environ.get('@GENAI')
-    VERTEX_AI_LOCATION = 'asia-south1'  # Default location, can be changed
+    VERTEX_AI_LOCATION = 'us-central1'  # Default location, can be changed
 
     @classmethod
     def get_service_account_credentials(cls):
